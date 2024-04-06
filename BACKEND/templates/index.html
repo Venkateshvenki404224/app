@@ -1,18 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Backend</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Backend</h1>
-        <p>Choose a section:</p>
-        <ul>
-            <li><a href="index.php?section=users">Users</a></li>
-            <li><a href="index.php?section=posts">Posts</a></li>
-            <li><a href="index.php?section=comments">Comments</a></li>
-        </ul>
-    </div>
-</body>
-</html>
+{% extends "__base.html" %}
+{% block content %}
+
+<form  action="/calculate_distance" method="post" class="row g-3">
+  <div class="col-md-6">
+    <label for="inputEmail4" class="form-label">Email</label>
+    <input type="email" class="form-control" id="inputEmail4" name="emailId">
+  </div>
+  <div class="col-md-6">
+    <label for="inputPassword4" class="form-label">Full Name</label>
+    <input type="text" class="form-control" id="fullName" name="fullName">
+  </div>
+  <div class="col-12">
+    <label for="inputAddress" class="form-label">Pickup Location</label>
+    <input type="text" class="form-control" id="pickup_location" placeholder="1234 Main St" name="pickup_location">
+    <input type="hidden" id="pickup_lat" name="pickup_lat">
+    <input type="hidden" id="pickup_lng" name="pickup_lng">
+  </div>
+  <div class="col-12">
+    <label for="inputAddress2" class="form-label">Drop Location</label>
+    <input type="text" class="form-control" id="dropoff_location" placeholder="Apartment, studio, or floor" name="dropoff_location">
+    <input type="hidden" id="dropoff_lat" name="dropoff_lat">
+    <input type="hidden" id="dropoff_lng" name="dropoff_lng">
+  </div>
+  <div class="col-md-6">
+    <label for="inputCity" class="form-label">Phone Number</label>
+    <input type="text" class="form-control" id="inputCity">
+  </div>  
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Book Now</button>
+  </div>
+</form>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initAutocomplete" async
+  defer>
+  </script>
+{% if distance %}
+<p>Distance: {{ distance }}</p>
+{% endif %}
+{% endblock %}

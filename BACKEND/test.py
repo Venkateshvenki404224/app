@@ -1,23 +1,30 @@
-import googlemaps
-from datetime import datetime
+import requests
 
-gmaps = googlemaps.Client(key='Add Your Key here')
+def get_geolocation(api_key):
+    url = "https://www.googleapis.com/geolocation/v1/geolocate?key=" + api_key
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = {
+        "homeMobileCountryCode": 310,
+        "homeMobileNetworkCode": 410,
+        "radioType": "gsm",
+        "carrier": "Vodafone",
+        "considerIp": True
+    }
 
-# Geocoding an address
-geocode_result = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
+    response = requests.post(url, headers=headers, json=data)
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": "Request failed with status code " + str(response.status_code)}
 
-# Look up an address with reverse geocoding
-reverse_geocode_result = gmaps.reverse_geocode((40.714224, -73.961452))
+# Replace 'YOUR_API_KEY' with your actual API key
+api_key = 'AIzaSyCSbp6SvfkQQ9MRvLk1ouSJ5js6lxaOdGc'
+result = get_geolocation(api_key)
+print(result)
 
-# Request directions via public transit
-now = datetime.now()
-directions_result = gmaps.directions("Sydney Town Hall",
-                                     "Parramatta, NSW",
-                                     mode="transit",
-                                     departure_time=now)
 
-# Validate an address with address validation
-addressvalidation_result =  gmaps.addressvalidation(['1600 Amphitheatre Pk'], 
-                                                    regionCode='US',
-                                                    locality='Mountain View', 
-                                                    enableUspsCass=True)
+# My api = AIzaSyCAaRHlm9nfYaWBE-rNoMxMyUxYTvy0HKY
