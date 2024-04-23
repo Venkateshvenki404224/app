@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request,jsonify
 from src.Database import Database
 from geopy.distance import geodesic
-from src import get_config
+from src import get_config , generate_otp
 
 bp = Blueprint("api", __name__, url_prefix="/")
 db = Database.get_connection()
@@ -34,3 +34,20 @@ def calculate_distance():
     # Render the same template whether it's a GET or POST request
     return render_template("index.html", distance=distance, api_key=api_key)
 
+
+
+    @bp.route('/check_phone_number', methods=['POST'])
+    def check_phone_number():
+        phone_number = request.form.get('phone_number')
+        if phone_number:
+            # Check if phone number exists in the database
+            if db.check_phone_number(phone_number):
+                # Generate a random number
+                random_number = generate_otp()
+                # Store the random number in the database
+                db.store_random_number(phone_number, random_number)
+                return jsonify({'message': 'Random number generated and stored successfully'})
+            else:
+                return jsonify({'error': 'Phone number does not exist in the database'}), 400
+        else:
+            return jsonify({'error': 'Phone number is missing'}), 400

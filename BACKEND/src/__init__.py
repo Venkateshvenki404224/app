@@ -1,4 +1,6 @@
 import json
+import random
+import secrets
 
 # Function to get the value of a key from config.json
 def get_config(key):
@@ -11,3 +13,11 @@ def get_config(key):
         return config[key]
     else:
         raise Exception("Key {} is not found in config.json".format(key))
+
+
+
+# Function to generate a random OTP using secrets module
+
+def generate_otp():
+    otp = secrets.randbelow(1000000)  # Generate a random 6-digit OTP
+    return otp
