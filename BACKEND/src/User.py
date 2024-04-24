@@ -1,5 +1,5 @@
-from Database import Database
-from MongoGetterSetter import MongoGetterSetter
+from src.Database import Database
+from mongogettersetter import MongoGetterSetter
 
 
 db = Database.get_connection()
@@ -8,23 +8,9 @@ users = db.users  # This collection will store both agents and Telegram users
 class UserCollection(metaclass=MongoGetterSetter):
     def __init__(self, phone_number):
         self._collection = db.users
-        self._filter_query = {
-            "$or": [
-                {"phone_number": phone_number}, 
-                {"id": phone_number}
-            ]
+        self._filter_query = {"phone_number": phone_number}
 
-    class UserCollection(metaclass=MongoGetterSetter):
-        def __init__(self, phone_number):
-            self._collection = db.users
-            self._filter_query = {
-                "$or": [
-                    {"phone_number": phone_number}, 
-                    {"id": phone_number}
-                ]
-            }
-
-    class User:
+class Users:
         def __init__(self, id):
             self.collection = UserCollection(id)
             self.id = self.collection.id
@@ -55,7 +41,6 @@ class UserCollection(metaclass=MongoGetterSetter):
                     "status": 400,
                     "message": str(e)
                 }   
-            }
 
         @staticmethod
         def create_user(self, first_name, last_name, address, phone_number):

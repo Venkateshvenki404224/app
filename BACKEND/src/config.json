@@ -1,6 +1,6 @@
 {
     "mongodb_connection_string": "mongodb+srv://venkateshvenki404224:Qwertyuiop%40123@cluster0.uzf3psm.mongodb.net/",
-    "mongodb_database": "support_system",
+    "mongodb_database": "anywheregoods",
     "secret_key": "Vr4d5lvRh5j6FJ5Cmbzm",
     "GOOGLE_MAPS_API_KEY":"AIzaSyCAaRHlm9nfYaWBE-rNoMxMyUxYTvy0HKY"
 }

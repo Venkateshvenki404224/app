@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request,jsonify
 from src.Database import Database
 from geopy.distance import geodesic
 from src import get_config , generate_otp
+from src.OTPManager import OTPManager
 
 bp = Blueprint("api", __name__, url_prefix="/")
 db = Database.get_connection()
@@ -36,18 +37,50 @@ def calculate_distance():
 
 
 
-    @bp.route('/check_phone_number', methods=['POST'])
-    def check_phone_number():
-        phone_number = request.form.get('phone_number')
-        if phone_number:
-            # Check if phone number exists in the database
-            if db.check_phone_number(phone_number):
-                # Generate a random number
-                random_number = generate_otp()
-                # Store the random number in the database
-                db.store_random_number(phone_number, random_number)
-                return jsonify({'message': 'Random number generated and stored successfully'})
-            else:
-                return jsonify({'error': 'Phone number does not exist in the database'}), 400
+@bp.route('/generate_otp', methods=['POST'])
+def generate_otp():
+    phone_number = request.form.get('phone_number')
+    print(phone_number)
+    if phone_number:
+        result = OTPManager.generate_otp(phone_number)
+        print(result)
+        if result["status"] == 200:
+           return{
+                "status": 200,
+                "message": "OTP generated successfully",
+                "otp_code": result['otp']
+           }
         else:
-            return jsonify({'error': 'Phone number is missing'}), 400
+            return {
+                "status": 400,
+                "message": "Failed to generate OTP"
+            }
+    else:
+        return {
+            "status": 400,
+            "message": "Invalid phone number"
+        }
+
+
+@bp.route('/verify_otp', methods=['POST'])
+def verify_otp():
+    phone_number = request.form.get('phone_number')
+    otp_code = request.form.get('otp_code')
+    if phone_number and otp_code:
+        result = OTPManager.verify_otp(phone_number, otp_code)
+        print(result)
+        if result["status"] == 200:
+            return {
+                "status": 200,
+                "message": "OTP verified successfully"
+            }
+        else:
+            return {
+                "status": result["status"],
+                "message": result["message"]
+            }
+    else:
+        return {
+            "status": 400,
+            "message": "Invalid phone number or OTP"
+        }
